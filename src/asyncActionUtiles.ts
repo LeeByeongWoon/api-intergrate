@@ -1,6 +1,6 @@
 import { ActionHandler, initialStateType } from "./type";
 
-export default function ceateAyncDispatcher(type: 'GET_USERS' | 'GET_USER', promisefn: (...rest: any) => any) {
+export default function ceateAyncDispatcher(type: "GET_USERS" | "GET_USER", promisefn: (...rest: any) => any) {
     const SUCCESS = `${type}_SUCCESS`;
     const ERROR = `${type}_ERROR`;
 
@@ -9,13 +9,14 @@ export default function ceateAyncDispatcher(type: 'GET_USERS' | 'GET_USER', prom
             const data = await promisefn(...rest);
             dispatch({
                 type: SUCCESS,
-                data
+                data,
             });
-        } catch (e:any) {
-            dispatch({
-                type: ERROR,
-                error: e
-            })
+        } catch (e) {
+            if (typeof e == "string")
+                dispatch({
+                    type: ERROR,
+                    error: e,
+                });
         }
     }
     return actionHandler;
@@ -23,8 +24,8 @@ export default function ceateAyncDispatcher(type: 'GET_USERS' | 'GET_USER', prom
 export const initialAsyncState = {
     loading: false,
     data: null,
-    error: null
-}
+    error: null,
+};
 const loadingState = {
     loading: true,
     data: null,
@@ -43,7 +44,7 @@ const error = (e: string | null) => ({
     error: e,
 });
 
-export function createAsyncHandler(type: 'GET_USERS' | 'GET_USER', key: string | number) {
+export function createAsyncHandler(type: "GET_USERS" | "GET_USER", key: string | number) {
     const SUCCESS = `${type}_SUCCESS`;
     const ERROR = `${type}_ERROR`;
     function handler(state: initialStateType, action: any) {
@@ -51,18 +52,18 @@ export function createAsyncHandler(type: 'GET_USERS' | 'GET_USER', key: string |
             case type:
                 return {
                     ...state,
-                    [key]: loadingState
+                    [key]: loadingState,
                 };
             case SUCCESS:
                 return {
                     ...state,
-                    [key]: success(action.data)
+                    [key]: success(action.data),
                 };
             case ERROR:
                 return {
                     ...state,
-                    [key]: error(action.error)
-                }
+                    [key]: error(action.error),
+                };
             default:
                 return state;
         }
